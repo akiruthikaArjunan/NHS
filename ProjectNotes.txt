@@ -407,6 +407,432 @@ Quick recap so far
    - isVisible()
    - isPresent()
 --------------------------------------------------------------------------------------------------------------------------
+Create the file
+
+Right-click on the pages folder
+Click New → Java Class
+Type the name: SearchPage
+Press Enter
+
+Tell me when created and confirm you see package jobs.pages; at the top 👇You said: DoneDone8:00 PMClaude responded: Perfect!Perfect! ✅
+
+First — extend BasePage
+This is the important bit. We need to tell SearchPage to inherit all the helpers from BasePage.
+Change your class declaration line from:
+javapublic class SearchPage {
+To:
+javapublic class SearchPage extends BasePage {
+What does extends mean?
+
+SearchPage is a child of BasePage
+It automatically gets all the methods we wrote in BasePage
+waitForVisible(), click(), typeText() etc — all available for free!
+
+Then add the constructor below:
+javapublic SearchPage(WebDriver driver) {
+    super(driver);
+}
+What does super(driver) mean?
+
+Calls the parent class (BasePage) constructor
+Passes the browser to BasePage so it can set everything up
+Think of it like — "Hey BasePage, here's the browser, you set it up!"
+
+Fix any red imports with Alt + Enter
+Tell me when done 👇You said: nextnext8:05 PMClaude responded: Great!Great! ✅
+
+Now add the locators
+Locators are the addresses of elements on the page. They tell Selenium exactly where to find the keyword field, location field and search button.
+Type these below the constructor:
+javaprivate static final By KEYWORD_INPUT = By.id("keyword");
+private static final By LOCATION_INPUT = By.id("location");
+private static final By SEARCH_BUTTON = By.cssSelector("button[type='submit']");
+Understanding each one:
+
+By.id("keyword") — finds the element with id="keyword" in the page HTML
+By.id("location") — finds the element with id="location"
+By.cssSelector("button[type='submit']") — finds a button whose type is submit
+
+Why private static final?
+
+private — only this class uses these locators
+static — belongs to the class not an object
+final — these never change
+
+Tell me when done 👇You said: DoneDone8:07 PMClaude responded: Perfect!Perfect! ✅
+
+Now add the enterKeyword() method
+This method types a keyword into the search field.
+Type this below the locators:
+javapublic SearchPage enterKeyword(String keyword) {
+    typeText(KEYWORD_INPUT, keyword);
+    return this;
+}
+Understanding it:
+
+typeText(KEYWORD_INPUT, keyword) — uses the BasePage helper we wrote earlier
+return this — returns the same SearchPage back
+
+Why return this?
+It allows chaining — calling multiple methods in one line:
+javasearchPage.enterKeyword("Nurse").enterLocation("London")
+Instead of:
+javasearchPage.enterKeyword("Nurse");
+searchPage.enterLocation("London");
+Much cleaner to read! ✅
+Tell me when done 👇You said: DoneDone8:11 PMClaude responded: Great!Great! ✅
+
+Now add the enterLocation() method
+This method types a location into the location field.
+Type this below enterKeyword():
+javapublic SearchPage enterLocation(String location) {
+    typeText(LOCATION_INPUT, location);
+    return this;
+}
+Notice:
+
+Almost identical to enterKeyword()
+Only difference is it uses LOCATION_INPUT locator instead
+Also returns this for chaining
+
+Tell me when done 👇You said: DoneDone8:11 PMClaude responded: Great!Great! ✅
+
+Now add the clickSearch() method
+This method clicks the search button and returns the results page.
+Type this below enterLocation():
+javapublic SearchResultsPage clickSearch() {
+    click(SEARCH_BUTTON);
+    return new SearchResultsPage(driver);
+}
+Understanding it:
+
+click(SEARCH_BUTTON) — uses BasePage helper to click the button
+return new SearchResultsPage(driver) — after clicking search, we land on the results page
+So we return a new SearchResultsPage object ready to use
+
+You will see SearchResultsPage in red — that's fine! We haven't created that file yet. We will create it next.
+Tell me when done 👇You said: DoneDone8:13 PMClaude responded: Perfect!Perfect! ✅
+
+Now add the last method — isKeywordInputVisible()
+This method checks if the search page has loaded correctly by checking if the keyword field is visible.
+Type this below clickSearch():
+javapublic boolean isKeywordInputVisible() {
+    return isVisible(KEYWORD_INPUT);
+}
+Understanding it:
+
+Uses the isVisible() helper from BasePage
+Returns true if the keyword field is on screen
+We will use this in our tests to confirm the page loaded correctly
+
+Tell me when done 👇You said: nextnext8:14 PMClaude responded: Great!Great! ✅
+SearchPage.java is complete! 🎉
+
+Quick recap so far
+✅ pom.xml — all 6 dependencies
+✅ ConfigReader.java — browser, headless, URL settings
+✅ DriverFactory.java — creates, gets, closes the browser
+✅ BasePage.java — shared helpers for all page files
+✅ SearchPage.java — keyword, location, search button
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Next file — SearchResultsPage.java
+This represents the results page after clicking search.
+It needs to handle:
+
+Checking if job results appeared
+Checking if a no results message appeared
+Sorting results
+Pagination (next page)
+Clicking the first result
+
+
+Create the file
+
+Right-click on the pages folder
+Click New → Java Class
+Type the name: SearchResultsPage
+Press Enter
+
+Tell me when created and confirm you see package jobs.pages; at the top 👇You said: NextNext8:16 PMClaude responded: Did you create the file?Did you create the file?
+Just confirm you can see SearchResultsPage.java in your pages folder and package jobs.pages; at the top 👇You said: yesyes8:17 PMClaude responded: Perfect!Perfect! ✅
+
+First — extend BasePage and add constructor
+Just like SearchPage, this class needs to extend BasePage.
+Change your class declaration to:
+javapublic class SearchResultsPage extends BasePage {
+Then add the constructor:
+javapublic SearchResultsPage(WebDriver driver) {
+    super(driver);
+}
+Fix any red imports with Alt + Enter
+Tell me when done 👇You said: nextnext8:17 PMClaude responded: Great!Great! ✅
+
+Now add the locators
+These are the addresses of elements on the results page.
+Type these below the constructor:
+javaprivate static final By JOB_CARDS = By.cssSelector("[data-test='search-result']");
+private static final By NO_RESULTS = By.cssSelector("[data-test='no-results']");
+private static final By SORT_DROPDOWN = By.cssSelector("select[name='sortBy']");
+private static final By NEXT_PAGE = By.cssSelector("[data-test='next-page']");
+private static final By RESULTS_COUNT = By.cssSelector("[data-test='result-count']");
+Understanding each one:
+
+JOB_CARDS — each individual job listing card
+NO_RESULTS — the message shown when nothing is found
+SORT_DROPDOWN — the dropdown to sort results
+NEXT_PAGE — the next page pagination link
+RESULTS_COUNT — the total count text like "152 jobs found"
+
+Tell me when done 👇You said: DoneDone8:18 PMClaude responded: Perfect!Perfect! ✅
+
+Now add the hasResults() method
+This method checks if any job cards are visible on the page.
+Type this below the locators:
+javapublic boolean hasResults() {
+    try {
+        wait.until(ExpectedConditions.or(
+            ExpectedConditions.presenceOfElementLocated(JOB_CARDS),
+            ExpectedConditions.presenceOfElementLocated(NO_RESULTS)
+        ));
+    } catch (Exception e) {
+        // neither appeared - just continue
+    }
+    return !driver.findElements(JOB_CARDS).isEmpty();
+}
+Understanding it:
+
+First waits for EITHER job cards OR no results message to appear
+ExpectedConditions.or() — waits for one OR the other
+Then checks if job cards list is NOT empty
+Returns true if jobs found, false if not
+
+Fix red imports with Alt + Enter
+Tell me when done 👇You said: nextnext8:20 PMClaude responded: Great!Great! ✅
+
+Now add the getResultCount() method
+This method counts how many job cards are on the current page.
+Type this below hasResults():
+javapublic int getResultCount() {
+    return driver.findElements(JOB_CARDS).size();
+}
+Understanding it:
+
+findElements() — returns a list of ALL matching elements
+.size() — counts how many are in the list
+Returns a number like 10, 25 etc
+
+Simple but very useful — we can use this to verify the right number of results appear.
+Tell me when done 👇You said: bextbext8:21 PMClaude responded: Great!Great! ✅
+
+Now add the hasNoResultsMessage() method
+This method checks if a "no results" message is shown on the page.
+Type this below getResultCount():
+javapublic boolean hasNoResultsMessage() {
+    return isVisible(NO_RESULTS);
+}
+Understanding it:
+
+Uses isVisible() from BasePage
+Returns true if the no results message is on screen
+Returns false if it is not there
+
+When would this be used?
+
+When someone searches for something that doesn't exist
+Like searching for "xyzabc123" — no jobs would match
+We expect to see a no results message
+This method confirms it appeared ✅
+
+Tell me when done 👇You said: nextnext9:01 PMClaude responded: Great!Great! ✅
+
+Now add the getResultsCountText() method
+This method reads the results count text shown on the page — like "152 jobs found".
+Type this below hasNoResultsMessage():
+javapublic String getResultsCountText() {
+    if (isVisible(RESULTS_COUNT)) {
+        return getText(RESULTS_COUNT);
+    }
+    return "";
+}
+Understanding it:
+
+First checks if the results count element is visible
+If yes — reads and returns the text
+If no — returns empty string instead of crashing
+
+Why check first before getting text?
+
+If results count is not on page and we call getText() directly — it crashes!
+By checking first with isVisible() — we handle it safely ✅
+
+Tell me when done 👇You said: Next PleaseNext Please9:04 PMClaude responded: Great!Great! ✅
+
+Now add the sortBy() method
+This method selects an option from the sort dropdown.
+Type this below getResultsCountText():
+javapublic SearchResultsPage sortBy(String optionText) {
+    Select dropdown = new Select(waitForVisible(SORT_DROPDOWN));
+    dropdown.selectByVisibleText(optionText);
+    wait.until(ExpectedConditions.presenceOfElementLocated(JOB_CARDS));
+    return this;
+}
+Understanding it:
+
+new Select() — wraps the dropdown element so we can interact with it
+waitForVisible(SORT_DROPDOWN) — waits for dropdown to appear
+selectByVisibleText(optionText) — selects the option by the text you see on screen
+Waits for job cards to reload after sorting
+return this — returns same page for chaining
+
+Fix red imports with Alt + Enter — choose:
+
+org.openqa.selenium.support.ui.Select
+
+Tell me when done 👇You said: nextnext9:05 PMClaude responded: Great!Great! ✅
+
+Now add the hasNextPage() method
+This method checks if a next page link is available.
+Type this below sortBy():
+javapublic boolean hasNextPage() {
+    return isVisible(NEXT_PAGE);
+}
+Understanding it:
+
+Uses isVisible() from BasePage
+Returns true if next page link is on screen
+Returns false if we are on the last page
+
+When would this be used?
+
+Before clicking next page — we first check it exists
+If it doesn't exist and we try to click it — test would crash!
+So we always check first ✅
+
+Tell me when done 👇You said: nextnext9:06 PMClaude responded: Great!Great! ✅
+
+Now add the goToNextPage() method
+This method clicks the next page link and waits for new results to load.
+Type this below hasNextPage():
+javapublic SearchResultsPage goToNextPage() {
+    click(NEXT_PAGE);
+    wait.until(ExpectedConditions.presenceOfElementLocated(JOB_CARDS));
+    return this;
+}
+Understanding it:
+
+click(NEXT_PAGE) — uses BasePage helper to click next page
+wait.until(...) — waits for new job cards to load
+return this — returns same page for chaining
+
+Why wait after clicking?
+
+Clicking next page triggers a new page load
+If we immediately try to read results — they might not be there yet!
+Waiting ensures results are fully loaded before continuing ✅
+
+Tell me when done 👇You said: nextnext9:07 PMClaude responded: Great!Great! ✅
+
+Now add the clickFirstResult() method
+This method clicks the first job card and returns the job detail page.
+Type this below goToNextPage():
+javapublic JobDetailPage clickFirstResult() {
+    List<WebElement> cards = wait.until(
+        ExpectedConditions.visibilityOfAllElementsLocatedBy(JOB_CARDS));
+    WebElement firstCard = cards.get(0);
+    WebElement link = firstCard.findElement(By.cssSelector("a"));
+    link.click();
+    return new JobDetailPage(driver);
+}
+Understanding it:
+
+Waits for ALL job cards to be visible
+cards.get(0) — gets the very first card (index 0 = first item)
+Finds the link inside that card
+Clicks it
+Returns a new JobDetailPage — because we land there after clicking
+
+You will see JobDetailPage in red — that's fine! We create that file next.
+Fix red imports with Alt + Enter
+Tell me when done 👇You said: NextNext9:09 PMClaude responded: Great!Great! ✅
+
+Now add the last method — isPageFullyLoaded()
+This method checks if the results page has loaded completely.
+Type this below clickFirstResult():
+javapublic boolean isPageFullyLoaded() {
+    return getCurrentUrl().contains("search") 
+        && isPresent(By.tagName("main"));
+}
+Understanding it:
+
+getCurrentUrl() — gets the current browser URL
+.contains("search") — checks URL has "search" in it
+isPresent(By.tagName("main")) — checks main content area exists
+Both must be true for page to be considered fully loaded
+
+Why two checks?
+
+URL alone isn't enough — page might still be loading
+Checking for "main" tag confirms actual content is there ✅
+
+Tell me when done 👇You said: getCurrentUrl where it exists?getCurrentUrl where it exists?9:10 PMClaude responded: Great question!Great question! 🎯
+
+Where does getCurrentUrl() come from?
+Remember when we wrote BasePage.java?
+We didn't add getCurrentUrl() as a helper there — it actually comes directly from WebDriver!
+
+But wait — how can we use it in SearchResultsPage?
+Because of this chain:
+SearchResultsPage 
+    extends BasePage
+        has WebDriver driver
+            driver.getCurrentUrl()
+So we could write it as:
+javadriver.getCurrentUrl()
+
+Let's fix this properly
+Go back to BasePage.java and add this helper method:
+javaprotected String getCurrentUrl() {
+    return driver.getCurrentUrl();
+}
+This way:
+
+BasePage wraps driver.getCurrentUrl()
+All page files can call getCurrentUrl() cleanly
+No need to write driver.getCurrentUrl() everywhere ✅
+
+
+Do two things:
+
+Add getCurrentUrl() to BasePage.java
+Come back to SearchResultsPage.java
+
+Tell me when done 👇You said: DoneDone9:12 PMClaude responded: Perfect!Perfect! ✅
+Now go back to SearchResultsPage.java and add the isPageFullyLoaded() method we were just writing:
+javapublic boolean isPageFullyLoaded() {
+    return getCurrentUrl().contains("search") 
+        && isPresent(By.tagName("main"));
+}
+Now it will find getCurrentUrl() from BasePage — no red underline! ✅
+Tell me when done 👇You said: DoneDone9:12 PMClaude responded: Brilliant!Brilliant! SearchResultsPage.java is complete! 🎉
+
+Quick recap so far
+✅ pom.xml — all 6 dependencies
+✅ ConfigReader.java — browser, headless, URL settings
+✅ DriverFactory.java — creates, gets, closes the browser
+✅ BasePage.java — shared helpers for all page files
+✅ SearchPage.java — keyword, location, search button
+✅ SearchResultsPage.java — results, sort, pagination
+
+Next file — JobDetailPage.java
+This is the simplest page file — it represents the page you see after clicking a job listing.
+It just needs to check:
+
+Did we land on the right page?
+Is the job title visible?
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
