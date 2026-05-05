@@ -12,16 +12,39 @@ test
     features
 
 Step 2:
-First dependency — Selenium
-Selenium is the tool that controls the browser — clicks buttons, types text, reads the page
-Second dependency — WebDriverManager
-This tool automatically downloads ChromeDriver for you. Without it, you'd have to manually download and set up ChromeDriver every time Chrome updates. WebDriverManager does it for you.
-Third dependency — Cucumber Java
-This is what lets us write tests in plain English. It reads your .feature files and understands the Given/When/Then steps.
-Fourth dependency — Cucumber JUnit Platform Engine
-This connects Cucumber to JUnit so your tests can actually run inside IntelliJ and Maven.
-Fifth dependency — JUnit Platform Suite
-This is what allows us to run the Cucumber tests as a test suite — basically the engine that powers the test runner.
-Sixth and final dependency — AssertJ
-This is what we use to check if tests pass or fail. It lets us write assertions in plain readable English like:
+  First dependency — Selenium
+    Selenium is the tool that controls the browser — clicks buttons, types text, reads the page
+  Second dependency — WebDriverManager
+    This tool automatically downloads ChromeDriver for you. Without it, you'd have to manually download and set up ChromeDriver every time Chrome updates. WebDriverManager does it for you.
+  Third dependency — Cucumber Java
+    This is what lets us write tests in plain English. It reads your .feature files and understands the Given/When/Then steps.
+  Fourth dependency — Cucumber JUnit Platform Engine
+    This connects Cucumber to JUnit so your tests can actually run inside IntelliJ and Maven.
+  Fifth dependency — JUnit Platform Suite
+    This is what allows us to run the Cucumber tests as a test suite — basically the engine that powers the test runner.
+  Sixth and final dependency — AssertJ
+    This is what we use to check if tests pass or fail. It lets us write assertions in plain readable English
+Step 3:
+Look inside your <dependencies> block and tell me — do you see all 6 of these?
+
+selenium-java
+webdrivermanager
+cucumber-java
+cucumber-junit-platform-engine
+junit-platform-suite
+assertj-core
+
+Quick recap of what we've done so far
+✅ Java 21 installed
+✅ IntelliJ installed
+✅ Project created
+✅ Folder structure created
+✅ pom.xml configured with all 6 dependencies
+
+--------------------------pom.xml is complete! --------------------------------------------------------------------------------------------------
+
+
+
+
+
 
