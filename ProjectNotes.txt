@@ -832,7 +832,117 @@ Is the job title visible?
 
 ---------------------------------------------------------------------------------------------------------------------------
 
+Next file — JobDetailPage.java
+This is the simplest page file — it represents the page you see after clicking a job listing.
+It just needs to check:
 
+Did we land on the right page?
+Is the job title visible?
+
+
+Create the file
+
+Right-click on the pages folder
+Click New → Java Class
+Type the name: JobDetailPage
+Press Enter
+
+Tell me when created and confirm you see package jobs.pages; at the top 👇You said: nextnext9:15 PMClaude responded: Did you create the file?Did you create the file?
+Just confirm you can see JobDetailPage.java in your pages folder and package jobs.pages; at the top 👇You said: yesyes9:15 PMClaude responded: Perfect!Perfect! ✅
+
+First — extend BasePage and add constructor
+Just like the other page files, extend BasePage and add the constructor.
+But this one has something extra — we wait for the URL to change to a job detail page as soon as it is created.
+Change your class declaration to:
+javapublic class JobDetailPage extends BasePage {
+Then add the constructor:
+javapublic JobDetailPage(WebDriver driver) {
+    super(driver);
+    wait.until(ExpectedConditions.urlContains("job"));
+}
+Understanding urlContains("job"):
+
+As soon as we land on a job detail page
+The URL changes to something like /job/12345
+We wait for that URL change to confirm we are on the right page
+If it never happens — test fails with a clear error ✅
+
+Fix red imports with Alt + Enter
+Tell me when done 👇You said: DoneDone9:16 PMClaude responded: Great!Great! ✅
+
+Now add the locators
+Type these below the constructor:
+javaprivate static final By JOB_TITLE = By.cssSelector("h1");
+private static final By JOB_CONTENT = By.cssSelector("main");
+Understanding each one:
+
+JOB_TITLE — the main heading of the job — always an h1 tag
+JOB_CONTENT — the main content area of the page
+
+Tell me when done 👇You said: NextNext9:17 PMClaude responded: Great!Great! ✅
+
+Now add the isDisplayed() method
+This method checks if the job detail page has loaded correctly.
+Type this below the locators:
+javapublic boolean isDisplayed() {
+    return isVisible(JOB_TITLE) || isVisible(JOB_CONTENT);
+}
+Understanding it:
+
+Checks if EITHER the job title OR the main content is visible
+|| means OR — only one needs to be true
+Returns true if page has loaded correctly ✅
+
+Tell me when done 👇You said: nextnext9:17 PMClaude responded: Great!Great! ✅
+
+Now add the getJobTitle() method
+This method reads and returns the job title from the page.
+Type this below isDisplayed():
+javapublic String getJobTitle() {
+    return getText(JOB_TITLE);
+}
+Understanding it:
+
+Uses getText() from BasePage
+Finds the h1 heading on the page
+Returns the text inside it
+Example: "Staff Nurse — London NHS Trust"
+
+Tell me when done 👇You said: nextnext9:18 PMClaude responded: Great!Great! ✅
+
+Now add the last method — isOnJobDetailUrl()
+This method confirms the URL looks like a job detail page.
+Type this below getJobTitle():
+javapublic boolean isOnJobDetailUrl() {
+    String url = getCurrentUrl();
+    return url.contains("/job/") 
+        || url.contains("/vacancy/")
+        || url.contains("jobId");
+}
+Understanding it:
+
+Gets the current URL
+Checks if it contains any of these patterns:
+
+/job/ — most common job detail URL pattern
+/vacancy/ — another possible pattern
+jobId — some sites use this in their URL
+
+
+Returns true if any one of them matches ✅
+
+Tell me when done 👇You said: nextnext9:19 PMClaude responded: Brilliant!Brilliant! JobDetailPage.java is complete! 🎉
+
+Quick recap so far
+✅ pom.xml — all 6 dependencies
+✅ ConfigReader.java — browser, headless, URL settings
+✅ DriverFactory.java — creates, gets, closes the browser
+✅ BasePage.java — shared helpers for all page files
+✅ SearchPage.java — keyword, location, search button
+✅ SearchResultsPage.java — results, sort, pagination
+✅ JobDetailPage.java — job title, URL check
+
+------------------------------------------------------------------------------------------------------------------------------------
 
 
 
