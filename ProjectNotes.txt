@@ -944,6 +944,191 @@ Quick recap so far
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
+Next file — the Feature File!
+This is the most exciting file — it's written in plain English!
+No Java at all — just sentences describing what the tests should do.
+
+Create the file
+
+Right-click on the features folder inside test/resources/
+Click New → File
+Type the name: NHSSearch.feature
+Press Enter
+
+Important — it must end in .feature
+Tell me when created 👇You said: yesyes9:22 PMClaude responded: Perfect!Perfect! ✅
+
+Understanding the feature file structure
+A feature file has 3 parts:
+
+1. Feature — what are we testing?
+Feature: NHS Jobs Search Functionality
+One line describing the whole file.
+
+2. Background — what runs before EVERY test?
+Background:
+    Given I am on the NHS Jobs search page
+This runs before every single scenario — so we don't repeat it every time.
+
+3. Scenarios — the actual tests
+Scenario: Search with a valid keyword
+    When I search for jobs with keyword "Nurse"
+    And I submit the search
+    Then I should see a list of job results
+
+Now type the first part
+Type this at the top of your feature file:
+gherkinFeature: NHS Jobs Search Functionality
+
+  Background:
+    Given I am on the NHS Jobs search page
+Notice the indentation — Background is indented 2 spaces, Given is indented 4 spaces.
+Tell me when done 👇You said: donedone9:24 PMClaude responded: Perfect!Perfect! ✅
+
+Now add the first scenario — Happy Path Search
+This is the most basic test — search for a real job and check results appear.
+Type this below the Background:
+gherkin  @Smoke @HappyPath
+  Scenario: Search for jobs with a valid keyword
+    When I search for jobs with keyword "Nurse"
+    And I submit the search
+    Then I should see a list of job results
+    And the page title should indicate results for "Nurse"
+Understanding the tags:
+
+@Smoke — this is a critical test, always run it
+@HappyPath — this is the normal expected behaviour
+
+Understanding the steps:
+
+When — the action we take
+And — continues the When
+Then — what we expect to happen
+And — continues the Then
+
+Tell me when done 👇You said: donedone9:26 PMClaude responded: Great!Great! ✅
+
+Now add the second scenario — Search with location
+This tests searching with both a keyword and a location.
+Type this below the first scenario:
+gherkin  @HappyPath
+  Scenario: Search for jobs with keyword and location
+    When I search for jobs with keyword "Doctor"
+    And I enter the location "London"
+    And I submit the search
+    Then I should see a list of job results
+    And the search results page should load completely
+Understanding it:
+
+Tests that location filtering works
+Checks results appear for a specific location
+A common real world search behaviour ✅
+
+Tell me when done 👇You said: nextnext9:27 PMClaude responded: Great!Great! ✅
+
+Now add the third scenario — Empty search
+This tests what happens when someone clicks search without typing anything.
+Type this below the second scenario:
+gherkin  @EdgeCase
+  Scenario: Search without entering a keyword
+    When I submit the search without entering any keyword
+    Then I should see a list of job results or a no results message
+Understanding it:
+
+@EdgeCase — this is an unusual input test
+We don't know exactly what NHS Jobs will show
+So we check for EITHER results OR a no results message
+Both are acceptable outcomes ✅
+
+Tell me when done 👇You said: nextnext9:27 PMClaude responded: Great!Great! ✅
+
+Now add the fourth scenario — No results
+This tests what happens when someone searches for something that doesn't exist.
+Type this below the third scenario:
+gherkin  @EdgeCase
+  Scenario: Search with a keyword that returns no results
+    When I search for jobs with keyword "xyzabc123"
+    And I submit the search
+    Then I should see a no results message
+Understanding it:
+
+"xyzabc123" is a nonsense keyword — no jobs will ever match it
+We expect a "no results" message to appear
+This confirms the website handles bad searches gracefully ✅
+
+Tell me when done 👇You said: nextnext9:28 PMClaude responded: Great!Great! ✅
+
+Now add the fifth scenario — Pagination
+This tests that you can navigate to the next page of results.
+Type this below the fourth scenario:
+gherkin  @HappyPath
+  Scenario: Navigate to the next page of results
+    When I search for jobs with keyword "Nurse"
+    And I submit the search
+    And I navigate to the next page of results
+    Then I should see the next page of job results
+Understanding it:
+
+Searches for Nurse — lots of results expected
+Clicks next page
+Checks results appear on page 2
+Confirms pagination works correctly ✅
+
+Tell me when done 👇You said: nextnext9:28 PMClaude responded: Great!Great! ✅
+
+Now add the sixth scenario — Sort results
+This tests that you can sort the results by date.
+Type this below the fifth scenario:
+gherkin  @HappyPath
+  Scenario: Sort job results by date posted
+    When I search for jobs with keyword "Nurse"
+    And I submit the search
+    Then I should have the option to sort results
+    When I sort the results by "Date posted (newest)"
+    Then the job results should be sorted by "date" in "descending" order
+Understanding it:
+
+Searches for Nurse
+Checks sort dropdown is available
+Selects newest first option
+Confirms results are sorted correctly ✅
+
+Tell me when done 👇You said: nextnext9:29 PMClaude responded: Great!Great! ✅
+
+Now add the seventh and final scenario — Job Detail
+This tests that you can click a job and see its details.
+Type this below the sixth scenario:
+gherkin  @Smoke @HappyPath
+  Scenario: Click on a job result to view details
+    When I search for jobs with keyword "Nurse"
+    And I submit the search
+    Then I should see a list of job results
+    When I click the first job result
+    Then I should be taken to the job detail page
+    And the job detail page should display job information
+Understanding it:
+
+Searches for Nurse
+Confirms results appear
+Clicks the first result
+Confirms we land on the job detail page
+Confirms job information is displayed ✅
+
+Tell me when done 👇You said: nextnext9:29 PMClaude responded: Brilliant!Brilliant! The feature file is complete! 🎉
+
+Quick recap so far
+✅ pom.xml — all 6 dependencies
+✅ ConfigReader.java — browser, headless, URL settings
+✅ DriverFactory.java — creates, gets, closes the browser
+✅ BasePage.java — shared helpers for all page files
+✅ SearchPage.java — keyword, location, search button
+✅ SearchResultsPage.java — results, sort, pagination
+✅ JobDetailPage.java — job title, URL check
+✅ NHSSearch.feature — 7 scenarios in plain English
+
+---------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
